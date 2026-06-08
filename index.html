@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vidya Bharati — Student Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║              AUTH SCREEN                             ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<div id="auth-screen">
+  <div class="auth-container">
+
+    <div class="auth-logo">
+      <div class="logo-mark">VBA</div>
+      <h1>Vidya Bharati Academy</h1>
+      <p>Student Management System</p>
+    </div>
+
+    <div class="auth-card">
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Sign In</button>
+        <button class="auth-tab" data-tab="register">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-form active" id="login-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="you@school.edu" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn-primary" id="login-btn">Sign In →</button>
+
+        <!-- Demo credentials -->
+        <div class="auth-demo">
+          <p>Quick Demo Login</p>
+          <div class="demo-creds">
+            <button class="demo-btn" data-creds="admin@school.edu|admin123|Admin">👑 Admin</button>
+            <button class="demo-btn" data-creds="priya@school.edu|teacher123|Teacher">👨‍🏫 Teacher</button>
+            <button class="demo-btn" data-creds="aarav@school.edu|student123|Student">👨‍🎓 Student</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-form" id="register-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Your full name">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="you@school.edu">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Min. 6 characters">
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select id="reg-role">
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button class="btn-primary" id="register-btn">Create Account →</button>
+      </div>
+    </div><!-- /auth-card -->
+
+  </div>
+</div><!-- /auth-screen -->
+
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║                  APP SHELL                           ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<div id="app">
+
+  <!-- Mobile sidebar overlay -->
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <!-- ┌─────────────────────────────────────────────────────┐
+       │                    SIDEBAR                          │
+       └─────────────────────────────────────────────────────┘ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Logo / Brand -->
+    <div class="sidebar-header">
+      <div class="sidebar-logo">VBA</div>
+      <div class="sidebar-brand">
+        <h2>Vidya Bharati</h2>
+        <span>Management System</span>
+      </div>
+    </div>
+
+    <!-- Current User -->
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar">AU</div>
+      <div class="user-info">
+        <div class="name" id="sidebar-user-name">Admin User</div>
+        <span class="role-badge admin" id="sidebar-user-role">admin</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+
+      <div class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">🏠</span> Dashboard
+      </div>
+
+      <div class="nav-section-label">Academic</div>
+
+      <!-- Admin & Teacher only -->
+      <div class="nav-item" data-page="students">
+        <span class="nav-icon">👨‍🎓</span> Students
+      </div>
+      <div class="nav-item" data-page="teachers">
+        <span class="nav-icon">👨‍🏫</span> Teachers
+      </div>
+      <div class="nav-item" data-page="subjects">
+        <span class="nav-icon">📚</span> Subjects
+      </div>
+
+      <!-- Teacher & Admin attendance -->
+      <div class="nav-item" data-page="attendance">
+        <span class="nav-icon">📅</span> Attendance
+      </div>
+
+      <!-- Student own attendance -->
+      <div class="nav-item" data-page="my-attendance">
+        <span class="nav-icon">📅</span> My Attendance
+      </div>
+
+      <div class="nav-section-label">Finance</div>
+
+      <div class="nav-item" data-page="fees">
+        <span class="nav-icon">💰</span> Fee Management
+      </div>
+      <div class="nav-item" data-page="my-fees">
+        <span class="nav-icon">💰</span> My Fees
+      </div>
+
+      <div class="nav-section-label">Insights</div>
+
+      <div class="nav-item" data-page="analytics">
+        <span class="nav-icon">📈</span> Analytics
+      </div>
+      <div class="nav-item" data-page="reports">
+        <span class="nav-icon">📊</span> Reports
+      </div>
+      <div class="nav-item" data-page="uploads">
+        <span class="nav-icon">📂</span> File Uploads
+      </div>
+
+      <div class="nav-section-label">Account</div>
+      <div class="nav-item" data-page="settings">
+        <span class="nav-icon">⚙️</span> Settings
+      </div>
+    </nav>
+
+    <!-- Footer actions -->
+    <div class="sidebar-footer">
+      <button id="theme-toggle">☀️ Light</button>
+      <button id="logout-btn">🚪 Logout</button>
+    </div>
+  </aside><!-- /sidebar -->
+
+
+  <!-- ┌─────────────────────────────────────────────────────┐
+       │                  MAIN CONTENT                       │
+       └─────────────────────────────────────────────────────┘ -->
+  <div class="main-wrap">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="icon-btn hamburger" id="hamburger-btn" style="display:none">☰</button>
+      <h1 class="topbar-title" id="page-title">Dashboard</h1>
+
+      <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" placeholder="Search across system…" id="global-search">
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Notifications -->
+        <div style="position:relative">
+          <button class="icon-btn" id="notif-btn" title="Notifications">
+            🔔<span class="dot" id="notif-dot"></span>
+          </button>
+          <!-- Notification Panel -->
+          <div class="notif-panel" id="notif-panel"></div>
+        </div>
+        <button class="icon-btn" title="Profile" onclick="navigateTo('settings')">👤</button>
+      </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <main class="page-content">
+
+      <!-- ───────────── DASHBOARD PAGE ───────────── -->
+      <section class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <h2>Dashboard Overview</h2>
+            <p>Welcome back! Here's what's happening today.</p>
+          </div>
+          <span id="dash-date" style="font-size:13px;color:var(--text-secondary)"></span>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="dashboard-stats">
+          <!-- Injected by JS -->
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <div class="card">
+            <div class="card-header">
+              <h3>Attendance by Class</h3>
+              <span class="badge cyan">This Month</span>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap">
+                <canvas id="attendance-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Fee Status</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap">
+                <canvas id="fee-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity + Announcements -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent Payments</h3>
+            </div>
+            <div class="card-body" id="recent-activity">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Announcements</h3>
+              <button class="btn btn-sm btn-outline" onclick="navigateTo('settings')">+ Post</button>
+            </div>
+            <div class="card-body" id="announcements-list">
+              <!-- Injected by JS dynamically, fallback: -->
+              <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:13.5px;font-weight:600">🏅 Annual Sports Day</div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">February 10, 2024 — All students to participate</div>
+              </div>
+              <div style="padding:10px 0">
+                <div style="font-size:13.5px;font-weight:600">👨‍👩‍👧 Parent-Teacher Meeting</div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">January 27, 2024 — 10 AM to 2 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ───────────── STUDENTS PAGE ───────────── -->
+      <section class="page" id="page-students">
+        <div class="page-header">
+          <div>
+            <h2>Student Management</h2>
+            <p>Add, edit, view and manage all students</p>
+          </div>
+          <button class="btn btn-cyan" id="add-student-btn">+ Add Student</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div class="search-input-wrap">
+            <span>🔍</span>
+            <input type="text" id="student-search" placeholder="Search by name or ID…">
+          </div>
+          <select class="filter-select" id="class-filter">
+            <option value="all">All Classes</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding-top:8px">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Class</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="students-tbody">
+                  <!-- Injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ───────────── TEACHERS PAGE ───────────── -->
+      <section class="page" id="page-teachers">
+        <div class="page-header">
+          <div>
+            <h2>Teacher Management</h2>
+            <p>Manage faculty and their subject assignments</p>
+          </div>
+          <button class="btn btn-cyan" id="add-teacher-btn">+ Add Teacher</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding-top:8px">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subjects</th>
+                    <th>Classes</th>
+                    <th>Qualification</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="teachers-tbody">
+                  <!-- Injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ───────────── ATTENDANCE PAGE ───────────── -->
+      <section class="page" id="page-attendance">
+        <div class="page-header">
+          <div>
+            <h2>Mark Attendance</h2>
+            <p>Record daily student attendance</p>
+          </div>
+          <button class="btn btn-green" id="submit-att-btn">✅ Submit Attendance</button>
+        </div>
+
+        <div class="filters-bar">
+          <select class="filter-select" id="att-class-filter">
+            <option value="all">All Classes</option>
+          </select>
+          <select class="filter-select" id="att-subject">
+            <!-- Injected by JS -->
+          </select>
+          <input type="date" class="filter-select" id="att-date" style="min-width:160px">
+        </div>
+
+        <div class="attendance-grid" id="attendance-mark-grid">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+
+      <!-- ───────────── MY ATTENDANCE PAGE ───────────── -->
+      <section class="page" id="page-my-attendance">
+        <div class="page-header">
+          <div>
+            <h2>My Attendance</h2>
+            <p>View your attendance records and percentage</p>
+          </div>
+        </div>
+        <div id="my-attendance-content">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+
+      <!-- ───────────── FEE MANAGEMENT PAGE ───────────── -->
+      <section class="page" id="page-fees">
+        <div class="page-header">
+          <div>
+            <h2>Fee Management</h2>
+            <p>Track payments, dues and generate receipts</p>
+          </div>
+          <button class="btn btn-cyan" id="add-fee-btn">+ Add Fee</button>
+        </div>
+
+        <!-- Summary Bar -->
+        <div style="margin-bottom:16px;padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-size:14px" id="fee-summary"></div>
+
+        <div class="filters-bar">
+          <select class="filter-select" id="fee-status-filter">
+            <option value="all">All Fees</option>
+            <option value="paid">Paid</option>
+            <option value="unpaid">Pending</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding-top:8px">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Term</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="fees-tbody">
+                  <!-- Injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ───────────── MY FEES PAGE ───────────── -->
+      <section class="page" id="page-my-fees">
+        <div class="page-header">
+          <div>
+            <h2>My Fees</h2>
+            <p>Your fee history and pending dues</p>
+          </div>
+        </div>
+        <div id="my-fees-content">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+
+      <!-- ───────────── SUBJECTS PAGE ───────────── -->
+      <section class="page" id="page-subjects">
+        <div class="page-header">
+          <div>
+            <h2>Subjects & Courses</h2>
+            <p>Manage subjects and assignments</p>
+          </div>
+        </div>
+        <div class="subjects-grid" id="subjects-grid">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+
+      <!-- ───────────── ANALYTICS PAGE ───────────── -->
+      <section class="page" id="page-analytics">
+        <div class="page-header">
+          <div>
+            <h2>Analytics Dashboard</h2>
+            <p>Trends, insights and data visualizations</p>
+          </div>
+        </div>
+        <div id="analytics-content">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+
+      <!-- ───────────── REPORTS PAGE ───────────── -->
+      <section class="page" id="page-reports">
+        <div class="page-header">
+          <div>
+            <h2>Reports & Exports</h2>
+            <p>Generate and download detailed reports</p>
+          </div>
+        </div>
+        <div id="reports-content">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+
+      <!-- ───────────── FILE UPLOADS PAGE ───────────── -->
+      <section class="page" id="page-uploads">
+        <div class="page-header">
+          <div>
+            <h2>File Uploads</h2>
+            <p>Upload assignments, documents and files</p>
+          </div>
+        </div>
+        <div id="uploads-content">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+
+      <!-- ───────────── SETTINGS PAGE ───────────── -->
+      <section class="page" id="page-settings">
+        <div class="page-header">
+          <div>
+            <h2>Settings</h2>
+            <p>Manage your profile and preferences</p>
+          </div>
+        </div>
+        <div id="settings-content">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+    </main><!-- /page-content -->
+  </div><!-- /main-wrap -->
+
+</div><!-- /app -->
+
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║                    MODALS                            ║
+     ╚══════════════════════════════════════════════════════╝ -->
+
+<!-- Add / Edit Student Modal -->
+<div class="modal-overlay" id="student-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="student-modal-title">Add Student</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="student-id-field">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="student-name-field" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label>Roll Number *</label>
+          <input type="text" id="student-roll-field" placeholder="S009">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Class *</label>
+          <select id="student-class-field">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" id="student-dob-field">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="student-email-field" placeholder="student@school.edu">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="student-phone-field" placeholder="+91 98765 XXXXX">
+        </div>
+        <div class="form-group">
+          <label>Parent Phone</label>
+          <input type="text" id="student-parent-phone-field" placeholder="+91 98765 XXXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Address</label>
+        <textarea id="student-address-field" rows="2" placeholder="Full address…" style="resize:vertical"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close">Cancel</button>
+        <button class="btn btn-cyan" id="save-student-btn">Save Student</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Student Modal -->
+<div class="modal-overlay" id="view-student-modal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <h3>Student Profile</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="view-student-body">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- Add Teacher Modal -->
+<div class="modal-overlay" id="teacher-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Teacher</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="teacher-name-field" placeholder="Dr. Jane Smith">
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="teacher-email-field" placeholder="jane@school.edu">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="teacher-phone-field" placeholder="+91 98765 XXXXX">
+        </div>
+        <div class="form-group">
+          <label>Qualification</label>
+          <input type="text" id="teacher-qual-field" placeholder="M.Sc Physics">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Subjects (comma separated)</label>
+        <input type="text" id="teacher-subjects-field" placeholder="Mathematics, Physics">
+      </div>
+      <div class="form-group">
+        <label>Classes (comma separated)</label>
+        <input type="text" id="teacher-classes-field" placeholder="10A, 11B">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close">Cancel</button>
+        <button class="btn btn-cyan" id="save-teacher-btn">Add Teacher</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Fee Modal -->
+<div class="modal-overlay" id="fee-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Fee Record</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Student *</label>
+        <select id="fee-student-field">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fee Type *</label>
+          <input type="text" id="fee-type-field" placeholder="Tuition Fee">
+        </div>
+        <div class="form-group">
+          <label>Amount (₹) *</label>
+          <input type="number" id="fee-amount-field" placeholder="15000">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Term *</label>
+          <input type="text" id="fee-term-field" placeholder="Term 2 2024">
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="date" id="fee-due-field">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close">Cancel</button>
+        <button class="btn btn-cyan" id="save-fee-btn">Add Fee</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fee Receipt Modal -->
+<div class="modal-overlay" id="receipt-modal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h3>Fee Receipt</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="receipt-body">
+      <!-- Injected by JS -->
+    </div>
+    <div style="padding:0 24px 20px;display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-outline modal-close">Close</button>
+      <button class="btn btn-cyan" onclick="window.print()">🖨️ Print Receipt</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║                 CHATBOT                              ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<button class="chatbot-btn" id="chatbot-btn" title="School Assistant">🤖</button>
+
+<div class="chatbot-window" id="chatbot-window">
+  <div class="chatbot-header">
+    <h4>School Assistant</h4>
+    <button class="icon-btn" id="chatbot-close" style="border:none;background:transparent;font-size:16px">✕</button>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <!-- Messages injected by JS -->
+  </div>
+  <div class="chat-input-wrap">
+    <input type="text" id="chat-input" placeholder="Ask me anything…">
+    <button class="chat-send" id="chat-send">➤</button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║                 TOAST CONTAINER                      ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<div class="toast-container" id="toast-container"></div>
+
+
+<!-- Script -->
+<script src="script.js"></script>
+<script>
+  // Set today's date in dashboard
+  const dateEl = document.getElementById('dash-date');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+</script>
+</body>
+</html>
